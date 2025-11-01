@@ -1,5 +1,3 @@
-"""Streamlit Data Analysis and Visualization Dashboard."""
-
 from __future__ import annotations
 
 from io import BytesIO, StringIO
