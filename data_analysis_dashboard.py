@@ -1,3 +1,5 @@
+"""Streamlit Data Analysis and Visualization Dashboard."""
+
 from __future__ import annotations
 
 from io import BytesIO, StringIO
@@ -18,45 +20,94 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 
 
-DEFAULT_THEME_NAME = "Streamlit Light"
+DEFAULT_THEME_NAME = "Professional Blue"
 
 
 THEME_PRESETS: Dict[str, Dict[str, Any]] = {
-    "Streamlit Light": {
+    "Professional Blue": {
         "style": "whitegrid",
-        "palette": "deep",
-        "primary_color": "#FF4B4B",
-        "background": "linear-gradient(135deg, #ffffff 0%, #f5f7fb 100%)",
-        "sidebar_bg": "#eef2f9",
-        "text_color": "#1f2a44",
-        "heatmap_cmap": "coolwarm",
+        "palette": ["#2563eb", "#3b82f6", "#60a5fa", "#93c5fd", "#dbeafe"],
+        "primary_color": "#2563eb",
+        "secondary_color": "#1e40af",
+        "accent_color": "#60a5fa",
+        "background": "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%)",
+        "sidebar_bg": "linear-gradient(180deg, #1e3a8a 0%, #1e40af 100%)",
+        "sidebar_text": "#ffffff",
+        "text_color": "#0f172a",
+        "card_bg": "#ffffff",
+        "border_color": "#e2e8f0",
+        "heatmap_cmap": "Blues",
+        "success_color": "#10b981",
+        "warning_color": "#f59e0b",
+        "error_color": "#ef4444",
     },
-    "Midnight": {
+    "Modern Dark": {
         "style": "darkgrid",
-        "palette": "rocket",
-        "primary_color": "#8ecae6",
-        "background": "#0b132b",
-        "sidebar_bg": "#1c2541",
+        "palette": ["#6366f1", "#818cf8", "#a78bfa", "#c4b5fd", "#ddd6fe"],
+        "primary_color": "#6366f1",
+        "secondary_color": "#4f46e5",
+        "accent_color": "#818cf8",
+        "background": "linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%)",
+        "sidebar_bg": "linear-gradient(180deg, #1e1b4b 0%, #312e81 100%)",
+        "sidebar_text": "#f8fafc",
         "text_color": "#f1f5f9",
-        "heatmap_cmap": "mako",
+        "card_bg": "#1e293b",
+        "border_color": "#334155",
+        "heatmap_cmap": "viridis",
+        "success_color": "#22c55e",
+        "warning_color": "#fbbf24",
+        "error_color": "#f87171",
     },
-    "Ocean": {
+    "Corporate Gray": {
+        "style": "whitegrid",
+        "palette": ["#475569", "#64748b", "#94a3b8", "#cbd5e1", "#e2e8f0"],
+        "primary_color": "#475569",
+        "secondary_color": "#334155",
+        "accent_color": "#64748b",
+        "background": "linear-gradient(135deg, #ffffff 0%, #f8fafc 50%, #f1f5f9 100%)",
+        "sidebar_bg": "linear-gradient(180deg, #1e293b 0%, #334155 100%)",
+        "sidebar_text": "#ffffff",
+        "text_color": "#0f172a",
+        "card_bg": "#ffffff",
+        "border_color": "#e2e8f0",
+        "heatmap_cmap": "gray",
+        "success_color": "#059669",
+        "warning_color": "#d97706",
+        "error_color": "#dc2626",
+    },
+    "Ocean Professional": {
         "style": "white",
-        "palette": ["#006494", "#247ba0", "#1b98e0", "#76c7f4", "#bedfed"],
-        "primary_color": "#006494",
-        "background": "linear-gradient(135deg, #e6f1ff 0%, #ffffff 100%)",
-        "sidebar_bg": "#d9e8ff",
-        "text_color": "#002855",
-        "heatmap_cmap": "crest",
+        "palette": ["#0ea5e9", "#38bdf8", "#7dd3fc", "#bae6fd", "#e0f2fe"],
+        "primary_color": "#0ea5e9",
+        "secondary_color": "#0284c7",
+        "accent_color": "#38bdf8",
+        "background": "linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #bae6fd 100%)",
+        "sidebar_bg": "linear-gradient(180deg, #075985 0%, #0c4a6e 100%)",
+        "sidebar_text": "#ffffff",
+        "text_color": "#0c4a6e",
+        "card_bg": "#ffffff",
+        "border_color": "#bae6fd",
+        "heatmap_cmap": "coolwarm",
+        "success_color": "#06b6d4",
+        "warning_color": "#f59e0b",
+        "error_color": "#ef4444",
     },
-    "Sunset": {
-        "style": "ticks",
-        "palette": ["#ff7f51", "#ffae5d", "#ffd166", "#f6bd60", "#ff9f1c"],
-        "primary_color": "#ff7f51",
-        "background": "linear-gradient(160deg, #fff4e6 0%, #ffffff 100%)",
-        "sidebar_bg": "#ffe8d6",
-        "text_color": "#4a2b16",
-        "heatmap_cmap": "flare",
+    "Emerald Professional": {
+        "style": "whitegrid",
+        "palette": ["#059669", "#10b981", "#34d399", "#6ee7b7", "#a7f3d0"],
+        "primary_color": "#059669",
+        "secondary_color": "#047857",
+        "accent_color": "#10b981",
+        "background": "linear-gradient(135deg, #ecfdf5 0%, #d1fae5 50%, #a7f3d0 100%)",
+        "sidebar_bg": "linear-gradient(180deg, #064e3b 0%, #065f46 100%)",
+        "sidebar_text": "#ffffff",
+        "text_color": "#064e3b",
+        "card_bg": "#ffffff",
+        "border_color": "#a7f3d0",
+        "heatmap_cmap": "Greens",
+        "success_color": "#10b981",
+        "warning_color": "#f59e0b",
+        "error_color": "#ef4444",
     },
 }
 
@@ -96,22 +147,433 @@ def apply_theme(theme_name: str) -> None:
     st.session_state.theme_choice = theme_name
     st.session_state.theme_config = theme
 
-    sns.set_theme(style=theme["style"], palette=theme["palette"])
+    # Set seaborn theme - handle both list and string palettes
+    palette_val = theme["palette"]
+    sns.set_theme(style=theme["style"], palette=palette_val)
+
+    # Get theme colors with defaults
+    card_bg = theme.get('card_bg', '#ffffff')
+    border_color = theme.get('border_color', '#e2e8f0')
+    sidebar_text = theme.get('sidebar_text', '#ffffff')
+    secondary_color = theme.get('secondary_color', theme['primary_color'])
+    accent_color = theme.get('accent_color', theme['primary_color'])
+    success_color = theme.get('success_color', '#10b981')
+    warning_color = theme.get('warning_color', '#f59e0b')
+    error_color = theme.get('error_color', '#ef4444')
 
     css = f"""
     <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap');
+    
+    * {{
+        font-family: 'Inter', 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        box-sizing: border-box;
+    }}
+    
+    /* Main App Container - Complete Webpage Look */
     .stApp {{
         background: {theme['background']};
         color: {theme['text_color']};
+        min-height: 100vh;
     }}
+    
+    /* Main Content Area */
+    .main [data-testid="stAppViewContainer"] {{
+        background: transparent;
+        padding: 2rem 3rem;
+        max-width: 1400px;
+        margin: 0 auto;
+    }}
+    
+    /* Professional Header Styling */
+    h1 {{
+        background: linear-gradient(135deg, {theme['primary_color']} 0%, {secondary_color} 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-family: 'Poppins', sans-serif;
+        font-weight: 800;
+        font-size: 2.75rem;
+        margin-bottom: 0.5rem;
+        letter-spacing: -1px;
+        line-height: 1.2;
+    }}
+    
+    h2 {{
+        font-family: 'Poppins', sans-serif;
+        font-weight: 700;
+        font-size: 1.875rem;
+        margin-top: 2.5rem;
+        margin-bottom: 1.25rem;
+        color: {theme['text_color']};
+        position: relative;
+        padding-bottom: 0.75rem;
+        padding-left: 1rem;
+        border-left: 4px solid {theme['primary_color']};
+    }}
+    
+    h3 {{
+        font-family: 'Poppins', sans-serif;
+        font-weight: 600;
+        font-size: 1.5rem;
+        color: {theme['text_color']};
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+    }}
+    
+    /* Professional Sidebar */
+    [data-testid="stSidebar"] {{
+        background: {theme['sidebar_bg']} !important;
+        backdrop-filter: blur(20px);
+        box-shadow: 4px 0 30px rgba(0,0,0,0.15);
+        border-right: 1px solid {border_color};
+    }}
+    
+    [data-testid="stSidebar"] p, 
+    [data-testid="stSidebar"] label,
+    [data-testid="stSidebar"] .stMarkdown p {{
+        color: {sidebar_text} !important;
+    }}
+    
+    [data-testid="stSidebar"] .stMarkdown h1 {{
+        background: linear-gradient(135deg, {sidebar_text}, {sidebar_text}dd);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-family: 'Poppins', sans-serif;
+        font-weight: 700;
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+    }}
+    
+    [data-testid="stSidebar"] .stMarkdown h3 {{
+        color: {sidebar_text} !important;
+        font-weight: 600;
+        opacity: 0.95;
+    }}
+    
+    [data-testid="stSidebar"] [data-baseweb="radio"] label {{
+        color: {sidebar_text} !important;
+        font-weight: 500;
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }}
+    
+    [data-testid="stSidebar"] [data-baseweb="radio"] label:hover {{
+        background: rgba(255,255,255,0.1);
+    }}
+    
+    /* Ensure sidebar selectbox is visible */
+    [data-testid="stSidebar"] .stSelectbox label,
+    [data-testid="stSidebar"] .stSelectbox > div > div {{
+        color: {sidebar_text} !important;
+    }}
+    
+    [data-testid="stSidebar"] .stSelectbox > div > div {{
+        background: rgba(255,255,255,0.1) !important;
+        border: 1px solid rgba(255,255,255,0.2) !important;
+    }}
+    
+    /* Professional Metrics Cards */
+    [data-testid="stMetricValue"] {{
+        font-family: 'Poppins', sans-serif;
+        font-size: 2.25rem !important;
+        font-weight: 700 !important;
+        color: {theme['primary_color']} !important;
+        line-height: 1.2;
+    }}
+    
+    [data-testid="stMetricLabel"] {{
+        font-size: 0.875rem !important;
+        font-weight: 600 !important;
+        color: {theme['text_color']}99 !important;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-top: 0.5rem;
+    }}
+    
+    [data-testid="stMetricDelta"] {{
+        font-weight: 600 !important;
+        font-size: 0.9rem !important;
+    }}
+    
+    /* Professional Buttons */
+    .stButton > button {{
+        background: linear-gradient(135deg, {theme['primary_color']} 0%, {secondary_color} 100%);
+        color: white !important;
+        border: none;
+        border-radius: 12px;
+        padding: 0.625rem 2rem;
+        font-weight: 600;
+        font-size: 0.95rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 4px 14px 0 rgba(0,0,0,0.15);
+        text-transform: none;
+    }}
+    
+    .stButton > button:hover {{
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px 0 rgba(0,0,0,0.2);
+        background: linear-gradient(135deg, {secondary_color} 0%, {theme['primary_color']} 100%);
+    }}
+    
+    .stButton > button:active {{
+        transform: translateY(0);
+    }}
+    
+    /* Professional File Uploader */
+    [data-testid="stFileUploader"] {{
+        border-radius: 16px;
+        border: 2px dashed {theme['primary_color']};
+        opacity: 0.6;
+        padding: 3rem 2rem;
+        transition: all 0.3s ease;
+        background: {card_bg};
+        backdrop-filter: blur(10px);
+    }}
+    
+    [data-testid="stFileUploader"]:hover {{
+        border-color: {theme['primary_color']};
+        opacity: 1;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    }}
+    
+    /* Enhanced Selectbox and Input */
+    .stSelectbox > div > div {{
+        background: {card_bg} !important;
+        border-radius: 12px;
+        border: 1.5px solid {border_color} !important;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }}
+    
+    .stSelectbox > div > div:hover {{
+        border-color: {theme['primary_color']} !important;
+        box-shadow: 0 4px 12px {theme['primary_color']}20;
+    }}
+    
+    /* Professional Expander */
+    [data-testid="stExpander"] {{
+        background: {card_bg} !important;
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        border: 1px solid {border_color} !important;
+        margin: 1.5rem 0;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }}
+    
+    /* Professional Card Container */
+    .modern-card {{
+        background: {card_bg};
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 2.5rem;
+        margin: 2rem 0;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+        border: 1px solid {border_color};
+        transition: all 0.3s ease;
+    }}
+    
+    .modern-card:hover {{
+        box-shadow: 0 15px 50px rgba(0,0,0,0.12);
+        transform: translateY(-2px);
+    }}
+    
+    /* Professional Messages */
+    .stSuccess {{
+        border-radius: 12px;
+        border-left: 4px solid {success_color};
+        background: rgba(16, 185, 129, 0.1);
+        padding: 1.25rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }}
+    
+    .stError {{
+        border-radius: 12px;
+        border-left: 4px solid {error_color};
+        background: rgba(239, 68, 68, 0.1);
+        padding: 1.25rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }}
+    
+    .stInfo {{
+        border-radius: 12px;
+        border-left: 4px solid {theme['primary_color']};
+        background: rgba(37, 99, 235, 0.1);
+        padding: 1.25rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }}
+    
+    .stWarning {{
+        border-radius: 12px;
+        border-left: 4px solid {warning_color};
+        background: rgba(245, 158, 11, 0.1);
+        padding: 1.25rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }}
+    
+    /* Professional Radio Buttons */
+    [data-testid="stRadio"] {{
+        padding: 1.25rem;
+        background: {card_bg}90;
+        border-radius: 12px;
+        margin: 0.75rem 0;
+        border: 1px solid {border_color};
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }}
+    
+    [data-testid="stRadio"] label {{
+        font-weight: 500;
+    }}
+    
+    /* Professional Slider */
+    .stSlider {{
+        margin: 1.5rem 0;
+    }}
+    
+    .stSlider > div > div {{
+        background: {border_color};
+        border-radius: 10px;
+        height: 10px;
+    }}
+    
+    .stSlider > div > div > div {{
+        background: linear-gradient(90deg, {theme['primary_color']}, {accent_color});
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }}
+    
+    /* Professional DataFrame */
+    .stDataFrame {{
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+        border: 1px solid {border_color};
+        background: {card_bg};
+    }}
+    
+    /* Professional Checkbox */
+    [data-testid="stCheckbox"] {{
+        padding: 0.75rem;
+    }}
+    
+    [data-testid="stCheckbox"] label {{
+        font-weight: 500;
+    }}
+    
+    /* Smooth Animations */
+    @keyframes fadeInUp {{
+        from {{
+            opacity: 0;
+            transform: translateY(20px);
+        }}
+        to {{
+            opacity: 1;
+            transform: translateY(0);
+        }}
+    }}
+    
+    .main-content {{
+        animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }}
+    
+    /* Professional Scrollbar */
+    ::-webkit-scrollbar {{
+        width: 10px;
+        height: 10px;
+    }}
+    
+    ::-webkit-scrollbar-track {{
+        background: {theme['background']};
+        border-radius: 10px;
+    }}
+    
+    ::-webkit-scrollbar-thumb {{
+        background: linear-gradient(180deg, {theme['primary_color']}, {accent_color});
+        border-radius: 10px;
+        border: 2px solid {theme['background']};
+    }}
+    
+    ::-webkit-scrollbar-thumb:hover {{
+        background: linear-gradient(180deg, {secondary_color}, {theme['primary_color']});
+    }}
+    
+    /* Text Styling */
     body, h1, h2, h3, h4, h5, h6, label, p, span {{
         color: {theme['text_color']} !important;
     }}
-    [data-testid="stSidebar"] {{
-        background: {theme['sidebar_bg']};
+    
+    p {{
+        line-height: 1.7;
+        font-size: 1rem;
     }}
+    
+    /* Metric Styling */
     .stMetric, .stMetricLabel, .stMetricDelta {{
         color: {theme['text_color']} !important;
+    }}
+    
+    /* Professional Divider */
+    hr {{
+        border: none;
+        border-top: 2px solid {border_color};
+        margin: 2rem 0;
+        opacity: 0.3;
+    }}
+    
+    /* Section Spacing */
+    .element-container {{
+        margin-bottom: 1.5rem;
+    }}
+    
+    /* Professional Background Pattern */
+    .stApp::before {{
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: 
+            radial-gradient(circle at 15% 20%, {theme['primary_color']}06 0%, transparent 50%),
+            radial-gradient(circle at 85% 80%, {accent_color}04 0%, transparent 50%),
+            radial-gradient(circle at 50% 50%, {secondary_color}03 0%, transparent 70%);
+        pointer-events: none;
+        z-index: -1;
+    }}
+    
+    /* Table Styling */
+    table {{
+        border-radius: 12px;
+        overflow: hidden;
+    }}
+    
+    /* Download Button */
+    [data-testid="baseButton-secondary"] {{
+        background: {card_bg} !important;
+        border: 1.5px solid {theme['primary_color']} !important;
+        color: {theme['primary_color']} !important;
+    }}
+    
+    [data-testid="baseButton-secondary"]:hover {{
+        background: rgba(37, 99, 235, 0.1) !important;
+    }}
+    
+    /* Professional Container Spacing */
+    .block-container {{
+        padding-top: 3rem;
+        padding-bottom: 3rem;
+    }}
+    
+    /* Improve Overall Layout - Keep navigation visible */
+    footer {{
+        visibility: hidden;
+    }}
+    
+    /* Only hide Streamlit's default hamburger menu if present */
+    [data-testid="stHeader"] {{
+        background: transparent;
     }}
     </style>
     """
@@ -121,7 +583,8 @@ def apply_theme(theme_name: str) -> None:
 def handle_file_upload() -> None:
     """Render uploader widget and validate CSV files."""
 
-    st.subheader("1. Upload Dataset")
+    st.markdown("### 📤 Upload Dataset")
+    st.markdown("---")
     uploaded_file = st.file_uploader(
         "Upload a CSV file",
         type=["csv"],
@@ -187,24 +650,66 @@ def get_categorical_columns(df: pd.DataFrame) -> list[str]:
 def render_data_summary(df: pd.DataFrame) -> None:
     """Display dataset overview, structure, and summary statistics."""
 
-    st.subheader("Dataset Overview")
+    st.markdown("### 📈 Dataset Overview")
+    st.markdown("---")
 
     total_rows = len(df)
     total_columns = len(df.columns)
     total_missing = int(df.isna().sum().sum())
 
-    col1, col2, col3 = st.columns(3)
-    col1.metric("Rows", f"{total_rows:,}")
-    col2.metric("Columns", f"{total_columns:,}")
-    col3.metric("Missing values", f"{total_missing:,}")
+    theme = st.session_state.get("theme_config", THEME_PRESETS[DEFAULT_THEME_NAME])
+    primary = theme['primary_color']
+    secondary = theme.get('secondary_color', primary)
+    accent = theme.get('accent_color', primary)
 
-    st.subheader("Column Types")
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.markdown(
+            f"""
+            <div style="background: linear-gradient(135deg, {primary} 0%, {secondary} 100%); 
+                        border-radius: 20px; padding: 2rem; color: white; text-align: center;
+                        box-shadow: 0 10px 40px rgba(0,0,0,0.2); transition: transform 0.3s ease;">
+                <div style="font-size: 3rem; font-weight: 800; margin-bottom: 0.5rem; font-family: 'Poppins', sans-serif;">{total_rows:,}</div>
+                <div style="font-size: 0.9rem; opacity: 0.95; text-transform: uppercase; letter-spacing: 2px; font-weight: 600;">Rows</div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+    with col2:
+        st.markdown(
+            f"""
+            <div style="background: linear-gradient(135deg, {secondary} 0%, {accent} 100%); 
+                        border-radius: 20px; padding: 2rem; color: white; text-align: center;
+                        box-shadow: 0 10px 40px rgba(0,0,0,0.2); transition: transform 0.3s ease;">
+                <div style="font-size: 3rem; font-weight: 800; margin-bottom: 0.5rem; font-family: 'Poppins', sans-serif;">{total_columns:,}</div>
+                <div style="font-size: 0.9rem; opacity: 0.95; text-transform: uppercase; letter-spacing: 2px; font-weight: 600;">Columns</div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+    with col3:
+        st.markdown(
+            f"""
+            <div style="background: linear-gradient(135deg, {accent} 0%, {primary} 100%); 
+                        border-radius: 20px; padding: 2rem; color: white; text-align: center;
+                        box-shadow: 0 10px 40px rgba(0,0,0,0.2); transition: transform 0.3s ease;">
+                <div style="font-size: 3rem; font-weight: 800; margin-bottom: 0.5rem; font-family: 'Poppins', sans-serif;">{total_missing:,}</div>
+                <div style="font-size: 0.9rem; opacity: 0.95; text-transform: uppercase; letter-spacing: 2px; font-weight: 600;">Missing Values</div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    st.markdown("### 📋 Column Types")
+    st.markdown("---")
     column_info = pd.DataFrame({
         "Column": df.columns,
         "Data Type": df.dtypes.astype(str).values,
         "Missing": df.isna().sum().values,
     })
-    st.dataframe(column_info, use_container_width=True)
+    st.dataframe(column_info, use_container_width=True, height=300)
 
     numeric_columns = get_numeric_columns(df)
     categorical_columns = get_categorical_columns(df)
@@ -215,7 +720,8 @@ def render_data_summary(df: pd.DataFrame) -> None:
     if not categorical_columns:
         st.warning("No categorical columns identified. Bar charts may be unavailable.")
 
-    st.subheader("Descriptive Statistics")
+    st.markdown("### 📊 Descriptive Statistics")
+    st.markdown("---")
 
     if numeric_columns:
         numeric_df = df[numeric_columns]
@@ -233,8 +739,9 @@ def render_data_summary(df: pd.DataFrame) -> None:
     else:
         st.info("Upload a dataset with numeric columns to view descriptive statistics.")
 
-    st.subheader("Summary by Column")
-    with st.expander("View summary statistics", expanded=False):
+    st.markdown("### 📑 Summary by Column")
+    st.markdown("---")
+    with st.expander("📖 View detailed summary statistics", expanded=False):
         try:
             desc = df.describe(include="all", datetime_is_numeric=True)
         except TypeError:
@@ -390,10 +897,21 @@ def generate_smart_insights(df: pd.DataFrame) -> List[Dict[str, str]]:
 def build_sidebar() -> str:
     """Render the sidebar and return the selected section key."""
 
-    st.sidebar.title("Navigation")
-    st.sidebar.write("Use the sections below to explore the dataset.")
+    theme = st.session_state.get("theme_config", THEME_PRESETS[DEFAULT_THEME_NAME])
+    sidebar_text_color = theme.get('sidebar_text', '#ffffff')
+    border_color_sidebar = f"rgba(255,255,255,0.2)" if sidebar_text_color == "#ffffff" else f"rgba(0,0,0,0.2)"
+    
+    st.sidebar.markdown(
+        f"""
+        <div style="text-align: center; padding: 1rem 0; border-bottom: 2px solid {border_color_sidebar}; margin-bottom: 1.5rem;">
+            <h1 style="font-size: 1.5rem; margin: 0; color: {sidebar_text_color};">🧭 Navigation</h1>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+    st.sidebar.markdown(f"<p style='font-size: 0.9rem; color: {sidebar_text_color}; opacity: 0.9; margin-bottom: 1.5rem;'>Use the sections below to explore your dataset.</p>", unsafe_allow_html=True)
 
-    st.sidebar.subheader("Appearance")
+    st.sidebar.markdown("### 🎨 Appearance")
     theme_options = list(THEME_PRESETS.keys())
     current_theme = st.session_state.get("theme_choice", DEFAULT_THEME_NAME)
     default_index = theme_options.index(current_theme) if current_theme in theme_options else 0
@@ -401,32 +919,63 @@ def build_sidebar() -> str:
         "Color theme",
         theme_options,
         index=default_index,
+        label_visibility="collapsed"
     )
     if theme_choice != current_theme:
         apply_theme(theme_choice)
-        st.experimental_rerun()
+        try:
+            st.rerun()
+        except AttributeError:
+            st.experimental_rerun()
+
+    st.sidebar.markdown("<br>", unsafe_allow_html=True)
+    st.sidebar.markdown("### 📍 Quick Access")
 
     section = st.sidebar.radio(
-        "Go to",
+        "",
         (
-            "Data Summary",
-            "Smart Insights",
-            "Visualizations",
-            "Missing Data",
-            "Mini ML Model",
-            "Export Report",
-            "About",
+            "📊 Data Summary",
+            "💡 Smart Insights",
+            "📈 Visualizations",
+            "🔍 Missing Data",
+            "🤖 Mini ML Model",
+            "💾 Export Report",
+            "ℹ️ About",
         ),
+        label_visibility="collapsed"
     )
-
-    return section
+    
+    # Extract section name without emoji
+    section_map = {
+        "📊 Data Summary": "Data Summary",
+        "💡 Smart Insights": "Smart Insights",
+        "📈 Visualizations": "Visualizations",
+        "🔍 Missing Data": "Missing Data",
+        "🤖 Mini ML Model": "Mini ML Model",
+        "💾 Export Report": "Export Report",
+        "ℹ️ About": "About",
+    }
+    
+    return section_map.get(section, section)
 
 
 def render_header() -> None:
     """Render the main page title and intro copy."""
+    
+    theme = st.session_state.get("theme_config", THEME_PRESETS[DEFAULT_THEME_NAME])
+    text_color = theme['text_color']
+    # Use a slightly muted version of text color for subtitle
+    text_color_muted = f"{text_color}99" if len(text_color) == 7 else f"{text_color}cc"
 
-    st.title("Data Analysis and Visualization Dashboard")
-    st.caption("Upload CSV datasets, explore structure, visualize patterns, and handle missing values.")
+    st.markdown(
+        f"""
+        <div style="text-align: center; padding: 2rem 0;">
+            <h1 style="margin-bottom: 0.5rem;">📊 Data Analysis & Visualization Dashboard</h1>
+            <p style="font-size: 1.1rem; color: {text_color_muted}; margin-top: 0;">Upload, explore, visualize, and analyze your data with powerful tools</p>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
 
 def render_section_placeholder(section: str) -> None:
@@ -436,7 +985,8 @@ def render_section_placeholder(section: str) -> None:
 
 
 def render_about_section(_: pd.DataFrame) -> None:
-    st.subheader("About This Dashboard")
+    st.markdown("### ℹ️ About This Dashboard")
+    st.markdown("---")
     
     st.write(
         """
@@ -445,7 +995,8 @@ def render_about_section(_: pd.DataFrame) -> None:
         """
     )
     
-    st.subheader("✨ Key Features")
+    st.markdown("### ✨ Key Features")
+    st.markdown("---")
     
     col1, col2 = st.columns(2)
     
@@ -488,7 +1039,8 @@ def render_about_section(_: pd.DataFrame) -> None:
         - Model performance metrics
         """)
     
-    st.subheader("🛠️ Technologies Used")
+    st.markdown("### 🛠️ Technologies Used")
+    st.markdown("---")
     st.write(
         """
         - **Streamlit** - Interactive web app framework
@@ -500,7 +1052,8 @@ def render_about_section(_: pd.DataFrame) -> None:
         """
     )
     
-    st.subheader("📋 How to Use")
+    st.markdown("### 📋 How to Use")
+    st.markdown("---")
     st.write(
         """
         1. **Upload** a CSV file using the upload widget
@@ -520,10 +1073,16 @@ def render_visualizations(df: pd.DataFrame) -> None:
     """Provide interactive visualization options."""
 
     theme = st.session_state.get("theme_config", THEME_PRESETS[DEFAULT_THEME_NAME])
-    sns.set_theme(style=theme["style"], palette=theme["palette"])
-
-    st.subheader("Visualization Explorer")
-    st.write("Select a plot type and configure options to explore the dataset visually.")
+    # Set seaborn theme - handle both list and string palettes
+    palette_val = theme["palette"]
+    sns.set_theme(style=theme["style"], palette=palette_val)
+    
+    text_color = theme['text_color']
+    text_color_muted = f"{text_color}99" if len(text_color) == 7 else f"{text_color}cc"
+    
+    st.markdown("### 📈 Visualization Explorer")
+    st.markdown(f"<p style='font-size: 1rem; color: {text_color_muted}; margin-bottom: 1.5rem;'>Select a plot type and configure options to explore your data visually</p>", unsafe_allow_html=True)
+    st.markdown("---")
 
     plot_type = st.selectbox(
         "Choose a visualization",
@@ -670,17 +1229,21 @@ def render_missing_data(df: pd.DataFrame) -> None:
     """Highlight missing data patterns and provide cleaning tools."""
 
     theme = st.session_state.get("theme_config", THEME_PRESETS[DEFAULT_THEME_NAME])
-    sns.set_theme(style=theme["style"], palette=theme["palette"])
+    # Set seaborn theme - handle both list and string palettes
+    palette_val = theme["palette"]
+    sns.set_theme(style=theme["style"], palette=palette_val)
 
-    st.subheader("Missing Data Overview")
+    st.markdown("### 🔍 Missing Data Overview")
+    st.markdown("---")
     summary = build_missing_summary(df)
-    st.dataframe(summary, use_container_width=True)
+    st.dataframe(summary, use_container_width=True, height=300)
 
     if summary["Missing Count"].sum() == 0:
         st.success("No missing values detected in the dataset.")
         return
 
-    st.subheader("Missing Data Heatmap")
+    st.markdown("### 🌡️ Missing Data Heatmap")
+    st.markdown("---")
     missing_cols = summary[summary["Missing Count"] > 0].index.tolist()
     heatmap_df = df[missing_cols].isna().astype(int)
     if len(heatmap_df) > 150:
@@ -694,7 +1257,8 @@ def render_missing_data(df: pd.DataFrame) -> None:
     st.pyplot(fig)
     plt.close(fig)
 
-    st.subheader("Handle Missing Values")
+    st.markdown("### 🛠️ Handle Missing Values")
+    st.markdown("---")
     action = st.radio(
         "Select an action",
         (
@@ -722,23 +1286,71 @@ def render_missing_data(df: pd.DataFrame) -> None:
                     reset_history=False,
                 )
                 st.success("Action applied successfully. Dataset updated.")
-                st.experimental_rerun()
+                try:
+                    st.rerun()
+                except AttributeError:
+                    st.experimental_rerun()
 
 
 def render_smart_insights(df: pd.DataFrame) -> None:
     """Display automatic insights and data quality metrics."""
     
-    st.subheader("Smart Insights")
-    st.write("Automatically generated insights about your dataset:")
+    st.markdown("### 💡 Smart Insights")
+    theme = st.session_state.get("theme_config", THEME_PRESETS[DEFAULT_THEME_NAME])
+    text_color = theme['text_color']
+    st.markdown(f"<p style='font-size: 1rem; color: {text_color}99; margin-bottom: 1.5rem;'>Automatically generated insights about your dataset</p>", unsafe_allow_html=True)
     
     quality = calculate_data_quality_score(df)
     
-    col1, col2, col3 = st.columns(3)
-    col1.metric("Data Quality Score", f"{quality['score']}%", delta=f"{quality['score']-50:.1f}%")
-    col2.metric("Completeness", f"{quality['completeness']}%")
-    col3.metric("Uniqueness", f"{quality['uniqueness']}%")
+    primary = theme['primary_color']
+    secondary = theme.get('secondary_color', primary)
+    accent = theme.get('accent_color', primary)
+    success_color = theme.get('success_color', '#10b981')
+    warning_color = theme.get('warning_color', '#f59e0b')
+    error_color = theme.get('error_color', '#ef4444')
     
-    st.write("---")
+    quality_color = success_color if quality['score'] >= 80 else warning_color if quality['score'] >= 60 else error_color
+    
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.markdown(
+            f"""
+            <div style="background: linear-gradient(135deg, {quality_color} 0%, {quality_color}dd 100%); 
+                        border-radius: 20px; padding: 2rem; color: white; text-align: center;
+                        box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
+                <div style="font-size: 3rem; font-weight: 800; margin-bottom: 0.5rem; font-family: 'Poppins', sans-serif;">{quality['score']}%</div>
+                <div style="font-size: 0.9rem; opacity: 0.95; text-transform: uppercase; letter-spacing: 2px; font-weight: 600;">Quality Score</div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+    with col2:
+        st.markdown(
+            f"""
+            <div style="background: linear-gradient(135deg, {primary} 0%, {secondary} 100%); 
+                        border-radius: 20px; padding: 2rem; color: white; text-align: center;
+                        box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
+                <div style="font-size: 3rem; font-weight: 800; margin-bottom: 0.5rem; font-family: 'Poppins', sans-serif;">{quality['completeness']:.1f}%</div>
+                <div style="font-size: 0.9rem; opacity: 0.95; text-transform: uppercase; letter-spacing: 2px; font-weight: 600;">Completeness</div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+    with col3:
+        st.markdown(
+            f"""
+            <div style="background: linear-gradient(135deg, {accent} 0%, {primary} 100%); 
+                        border-radius: 20px; padding: 2rem; color: white; text-align: center;
+                        box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
+                <div style="font-size: 3rem; font-weight: 800; margin-bottom: 0.5rem; font-family: 'Poppins', sans-serif;">{quality['uniqueness']:.1f}%</div>
+                <div style="font-size: 0.9rem; opacity: 0.95; text-transform: uppercase; letter-spacing: 2px; font-weight: 600;">Uniqueness</div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("---")
     
     insights = generate_smart_insights(df)
     
@@ -755,7 +1367,8 @@ def render_smart_insights(df: pd.DataFrame) -> None:
     else:
         st.info("No significant insights detected. Your data looks clean!")
     
-    st.subheader("Outlier Analysis")
+    st.markdown("### 📊 Outlier Analysis")
+    st.markdown("---")
     numeric_cols = get_numeric_columns(df)
     if numeric_cols:
         selected_col = st.selectbox("Select column for outlier analysis", numeric_cols)
@@ -793,8 +1406,13 @@ def render_smart_insights(df: pd.DataFrame) -> None:
 def render_ml_model(df: pd.DataFrame) -> None:
     """Build and evaluate simple machine learning models."""
     
-    st.subheader("Mini ML Model")
-    st.write("Train simple predictive models on your dataset.")
+    theme = st.session_state.get("theme_config", THEME_PRESETS[DEFAULT_THEME_NAME])
+    text_color = theme['text_color']
+    text_color_muted = f"{text_color}99" if len(text_color) == 7 else f"{text_color}cc"
+    
+    st.markdown("### 🤖 Mini ML Model")
+    st.markdown(f"<p style='font-size: 1rem; color: {text_color_muted}; margin-bottom: 1.5rem;'>Train simple predictive models on your dataset</p>", unsafe_allow_html=True)
+    st.markdown("---")
     
     numeric_cols = get_numeric_columns(df)
     if len(numeric_cols) < 2:
@@ -956,7 +1574,8 @@ def render_ml_model(df: pd.DataFrame) -> None:
 def render_download_section(df: pd.DataFrame) -> None:
     """Provide downloadable reports in multiple formats."""
     
-    st.subheader("Export Reports & Data")
+    st.markdown("### 💾 Export Reports & Data")
+    st.markdown("---")
     
     export_type = st.selectbox(
         "Select export format",
@@ -1048,11 +1667,13 @@ def main() -> None:
 
     renderer = section_renderers.get(section)
 
+    st.markdown('<div class="main-content">', unsafe_allow_html=True)
     with st.container():
         if renderer:
             renderer(st.session_state.dataset)
         else:
             render_section_placeholder(section)
+    st.markdown('</div>', unsafe_allow_html=True)
 
 
 if __name__ == "__main__":
